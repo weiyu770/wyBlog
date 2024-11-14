@@ -1,4 +1,6 @@
-测试账号： test@qq.com密码：123456
+基于SpringBoot + Vue3 + TypeScript + Vite的个人博客，MySQL数据库，Redis缓存，ElasticSearch全文搜索，支持QQ、Gitee、Github第三方登录，留言、友链、评论、说说、相册等功能。
+已经实现后端
+
 
 项目特点
 前台界面参考 Hexo 的 Shoka 和 Butterfly 设计，页面美观，响应式布局
