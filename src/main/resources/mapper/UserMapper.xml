@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wy.wydemo.mapper.UserMapper">
+
+    <resultMap id="UserBackMap" type="com.wy.wydemo.model.vo.response.UserBackResp">
+        <id column="id" property="id"/>
+        <result column="nick_name" property="nickname"/>
+        <result column="avatar" property="avatar"/>
+        <result column="ip_address" property="ipAddress"/>
+        <result column="ip_source" property="ipSource"/>
+        <result column="login_type" property="loginType"/>
+        <result column="is_disable" property="isDisable"/>
+        <result column="login_time" property="loginTime"/>
+        <result column="create_time" property="createTime"/>
+        <collection property="roleList" ofType="com.wy.wydemo.model.vo.response.UserRoleResp">
+            <id column="role_id" property="id"/>
+            <result column="role_name" property="roleName"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectUserCount" resultType="java.lang.Long">
+        SELECT
+        COUNT(id)
+        FROM
+        t_user
+        <where>
+            <if test="param.keyword != null and param.keyword != ''">
+                nick_name LIKE CONCAT('%', #{param.keyword}, '%')
+            </if>
+            <if test="param.loginType != null">
+                AND login_type = #{param.loginType}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectUserList" resultMap="UserBackMap">
+        SELECT
+        u.id,
+        u.nick_name AS nickname,
+        u.avatar,
+        u.ip_address,
+        u.ip_source,
+        u.login_type,
+        r.id AS role_id,
+        r.role_name,
+        u.is_disable,
+        u.login_time,
+        u.create_time
+        FROM
+        (
+        SELECT id FROM t_user
+        <where>
+            <if test="param.keyword != null and param.keyword != ''">
+                nick_name LIKE CONCAT('%', #{param.keyword}, '%')
+            </if>
+            <if test="param.loginType != null">
+                AND login_type = #{param.loginType}
+            </if>
+        </where>
+        LIMIT #{param.current}, #{param.size}
+        ) temp
+        LEFT JOIN t_user u ON temp.id = u.id
+        LEFT JOIN t_user_role ur ON temp.id = ur.user_id
+        LEFT JOIN t_role r ON ur.role_id = r.id
+    </select>
+
+</mapper>
