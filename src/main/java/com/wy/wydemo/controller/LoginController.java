@@ -1,5 +1,7 @@
 package com.wy.wydemo.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.dev33.satoken.stp.StpUtil;
 import com.wy.wydemo.annotation.AccessLimit;
 import com.wy.wydemo.exception.BusinessException;
 import com.wy.wydemo.model.dto.user.UserRegisterRequest;
@@ -90,6 +92,20 @@ public class LoginController {
         loginService.sendCode(username);
         return Result.success();
     }
+    
+    
+    /**
+     * 用户退出
+     */
+    @SaCheckLogin
+    @ApiOperation(value = "用户退出")
+    @GetMapping("/logout")
+    public Result<?> logout() {
+        StpUtil.logout();
+        return Result.success();
+    }
+    
+    
     
     /**
      * 用户邮箱注册

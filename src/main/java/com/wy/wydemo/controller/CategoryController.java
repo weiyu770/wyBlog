@@ -64,7 +64,7 @@ public class CategoryController {
     
     
     /**
-     * 删除分类
+     * 删除分类 / 批量删除
      *
      * @param categoryIdList 分类id集合
      * @return {@link Result<>}

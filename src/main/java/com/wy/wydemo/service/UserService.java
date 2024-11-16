@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.wy.wydemo.model.entity.User;
 import com.wy.wydemo.model.vo.vo.LoginUserVO;
 import com.wy.wydemo.model.vo.query.UserQuery;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -99,4 +100,12 @@ public interface UserService extends IService<User> {
      * @return
      */
     List<UserRoleResp> listUserRoleDTO();
+    
+    
+    /**
+     * 修改用户头像
+     * @param file
+     * @return
+     */
+    String updateUserAvatar(MultipartFile file);
 }

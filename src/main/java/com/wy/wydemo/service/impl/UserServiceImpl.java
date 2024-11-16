@@ -16,6 +16,7 @@ import com.wy.wydemo.mapper.UserMapper;
 import com.wy.wydemo.mapper.UserRoleMapper;
 import com.wy.wydemo.model.entity.User;
 import com.wy.wydemo.model.entity.UserRole;
+import com.wy.wydemo.model.enums.FilePathEnum;
 import com.wy.wydemo.model.enums.RoleEnum;
 import com.wy.wydemo.model.enums.StatusCodeEnum;
 import com.wy.wydemo.model.vo.query.OnlineUserQuery;
@@ -26,6 +27,7 @@ import com.wy.wydemo.model.vo.request.UserRoleReq;
 import com.wy.wydemo.model.vo.response.*;
 import com.wy.wydemo.model.vo.vo.LoginUserVO;
 import com.wy.wydemo.service.UserService;
+import com.wy.wydemo.strategy.context.UploadStrategyContext;
 import com.wy.wydemo.utils.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -33,6 +35,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -64,6 +67,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Autowired
     private RedisService redisService;
     
+    
+    @Autowired
+    private UploadStrategyContext uploadStrategyContext;
     
     @Autowired
     private RoleMapper roleMapper;
@@ -321,6 +327,25 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return roleMapper.selectUserRoleList();
     }
     
+    
+    /**
+     * 修改用户头像
+     * @param file
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public String updateUserAvatar(MultipartFile file) {
+        // 头像上传
+        String avatar = uploadStrategyContext.executeUploadStrategy(file, FilePathEnum.AVATAR.getPath());
+        // 更新用户头像
+        User newUser = User.builder()
+                .id(StpUtil.getLoginIdAsLong())
+                .avatar(avatar)
+                .build();
+        userMapper.updateById(newUser);
+        return avatar;
+    }
     
     /**
      * 校验验证码

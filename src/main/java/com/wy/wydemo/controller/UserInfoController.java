@@ -18,6 +18,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 用户信息控制器
@@ -60,6 +61,19 @@ public class UserInfoController {
     //TODO 写一个修改用户个人信息简介的全流程
     //TODO 还有修改用户密码的
     
+    
+    /**
+     * 修改用户头像
+     *
+     * @param file 文件
+     * @return {@link Result<String>} 头像地址
+     */
+    @ApiOperation(value = "修改用户头像")
+    @SaCheckPermission(value = "user:avatar:update")
+    @PostMapping("/user/avatar")
+    public Result<String> updateUserAvatar(@RequestParam(value = "file") MultipartFile file) {
+        return Result.success(userService.updateUserAvatar(file));
+    }
     
     
     
