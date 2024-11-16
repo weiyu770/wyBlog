@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.wy.wydemo.model.entity.Role;
 import com.wy.wydemo.model.vo.query.RoleQuery;
 import com.wy.wydemo.model.vo.request.RoleResp;
+import com.wy.wydemo.model.vo.response.UserRoleResp;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -34,4 +35,10 @@ public interface RoleMapper extends BaseMapper<Role> {
      * @return 后台角色列表
      */
     List<RoleResp> selectBackRoleList(@Param("param") RoleQuery roleQuery);
+        /**
+     * 查询用户角色选项
+     *
+     * @return 用户角色选项
+     */
+    List<UserRoleResp> selectUserRoleList();
 }

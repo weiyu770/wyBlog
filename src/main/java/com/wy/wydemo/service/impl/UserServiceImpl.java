@@ -11,6 +11,7 @@ import com.wy.wydemo.constant.CommonConstant;
 import com.wy.wydemo.constant.RedisConstant;
 import com.wy.wydemo.exception.BusinessException;
 import com.wy.wydemo.mapper.MenuMapper;
+import com.wy.wydemo.mapper.RoleMapper;
 import com.wy.wydemo.mapper.UserMapper;
 import com.wy.wydemo.mapper.UserRoleMapper;
 import com.wy.wydemo.model.entity.User;
@@ -62,6 +63,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     
     @Autowired
     private RedisService redisService;
+    
+    
+    @Autowired
+    private RoleMapper roleMapper;
     
     
     /**
@@ -305,7 +310,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         userMapper.updateById(newUser);
     }
     
-
+    /**
+     * 查询角色列表
+     *
+     * @return
+     */
+    
+    public List<UserRoleResp> listUserRoleDTO() {
+        // 查询角色列表
+        return roleMapper.selectUserRoleList();
+    }
     
     
     /**

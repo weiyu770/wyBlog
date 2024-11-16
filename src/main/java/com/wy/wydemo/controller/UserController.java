@@ -1,5 +1,6 @@
 package com.wy.wydemo.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.wy.wydemo.annotation.OptLogger;
 import com.wy.wydemo.model.vo.response.*;
 import com.wy.wydemo.model.vo.response.RouterResp;
@@ -71,6 +72,21 @@ public class UserController {
     public Result<PageResult<UserBackResp>> listUserBackVO(UserQuery userQuery) {
         return Result.success(userService.listUserBackVO(userQuery));
     }
+    
+    
+      /**
+     * 查看用户角色选项
+     *
+     * @return {@link UserRoleResp} 用户角色选项
+     */
+    @ApiOperation(value = "查看用户角色选项")
+    @SaCheckPermission("system:user:list")
+    @GetMapping("/admin/user/role")
+    public Result<List<UserRoleResp>> listUserRoleDTO() {
+        return Result.success(userService.listUserRoleDTO());
+    }
+    
+    
     
     /**
      * 修改用户角色

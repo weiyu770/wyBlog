@@ -94,5 +94,9 @@ public interface UserService extends IService<User> {
      */
     void updateUserEmail(EmailReq email);
     
-    
+    /**
+     * 查询角色列表
+     * @return
+     */
+    List<UserRoleResp> listUserRoleDTO();
 }
