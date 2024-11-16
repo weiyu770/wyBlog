@@ -223,6 +223,15 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         return result;
     }
     
+    /**
+     * 删除单个分类 / 根据ID删除分类
+     * @param id
+     */
+    @Override
+    public void deleteCategoryById(Integer id) {
+        categoryMapper.deleteById(id);
+    }
+    
     
     /**
      * 递归生成分类列表
@@ -248,8 +257,5 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         }
         return tree;
     }
-    
-    
-    
     
 }

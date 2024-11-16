@@ -34,7 +34,7 @@ public interface CategoryService extends IService<Category> {
     
     
     /**
-     * 删除分类
+     * 删除多个分类 / 批量删除
      * @param categoryIdList
      */
     void deleteCategory(List<Integer> categoryIdList);
@@ -65,4 +65,10 @@ public interface CategoryService extends IService<Category> {
      * @return
      */
     ArticleConditionList listArticleCategory(ArticleConditionQuery articleConditionQuery);
+    
+    /**
+     * 删除单个分类
+     * @param id
+     */
+    void deleteCategoryById(Integer id);
 }

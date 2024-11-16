@@ -1,6 +1,5 @@
 package com.wy.wydemo.controller;
 
-import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.wy.wydemo.annotation.OptLogger;
 import com.wy.wydemo.annotation.VisitLogger;
 import com.wy.wydemo.model.vo.query.ArticleConditionQuery;
@@ -25,7 +24,8 @@ import static com.wy.wydemo.constant.OptTypeConstant.*;
  * @author: yu_wei
  * @create: 2024/11/07 20:57
  */
-@Api(tags = "分类管理")
+//比如说用Java python
+@Api(tags = "分型管理")
 @RestController
 public class CategoryController {
     
@@ -41,12 +41,11 @@ public class CategoryController {
      * @return {@link CategoryBackResp} 后台分类
      */
     @ApiOperation(value = "分页查看后台分类列表")
-//    @SaCheckPermission("blog:category:list")
+    //    @SaCheckPermission("blog:category:list")
     @GetMapping("/admin/category/list")
     public Result<PageResult<CategoryBackResp>> listCategoryBackVO(CategoryQuery categoryQuery) {
         return Result.success(categoryService.listCategoryBackVO(categoryQuery));
     }
-    
     
     /**
      * 添加分类
@@ -56,13 +55,12 @@ public class CategoryController {
      */
     @OptLogger(value = ADD)
     @ApiOperation(value = "添加分类")
-//    @SaCheckPermission("blog:category:add")
+    //    @SaCheckPermission("blog:category:add")
     @PostMapping("/admin/category/add")
     public Result<?> addCategory(@Validated @RequestBody CategoryReq category) {
         categoryService.addCategory(category);
         return Result.success();
     }
-    
     
     
     /**
@@ -72,11 +70,23 @@ public class CategoryController {
      * @return {@link Result<>}
      */
     @OptLogger(value = DELETE)
-    @ApiOperation(value = "删除分类")
-//    @SaCheckPermission("blog:category:delete")
+    @ApiOperation(value = "删除多个")
+    //    @SaCheckPermission("blog:category:delete")
     @DeleteMapping("/admin/category/delete")
     public Result<?> deleteCategory(@RequestBody List<Integer> categoryIdList) {
         categoryService.deleteCategory(categoryIdList);
+        return Result.success();
+    }
+    
+    /**
+     * 删除单个分类
+     * @param id
+     * @return
+     */
+    @ApiOperation(value = "删除单个")
+    @DeleteMapping("/deleteCategory/{id}")
+    public Result<?> deleteCategoryById(@PathVariable Integer id) {
+        categoryService.deleteCategoryById(id);
         return Result.success();
     }
     
@@ -88,7 +98,7 @@ public class CategoryController {
      */
     @OptLogger(value = UPDATE)
     @ApiOperation(value = "修改分类")
-//    @SaCheckPermission("blog:category:update")
+    //    @SaCheckPermission("blog:category:update")
     @PutMapping("/admin/category/update")
     public Result<?> updateCategory(@Validated @RequestBody CategoryReq category) {
         categoryService.updateCategory(category);
