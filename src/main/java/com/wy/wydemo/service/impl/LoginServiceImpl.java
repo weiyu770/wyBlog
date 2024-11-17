@@ -127,7 +127,8 @@ public class LoginServiceImpl extends ServiceImpl<UserMapper, User> implements L
         log.info("用户登录成功 当前Token为：{}", tokenValue);
         long timeout = StpUtil.getTokenTimeout();  // 获取当前 token 剩余的有效时间，单位为秒
         System.out.println("当前 Token 剩余有效期为：" + timeout + " 秒");
-        return StpUtil.getTokenValue();
+        String token = StpUtil.getTokenValue();
+        return token;
     }
     
     

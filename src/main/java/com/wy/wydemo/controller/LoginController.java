@@ -1,6 +1,6 @@
 package com.wy.wydemo.controller;
 
-import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.dev33.satoken.exception.NotLoginException;
 import cn.dev33.satoken.stp.StpUtil;
 import com.wy.wydemo.annotation.AccessLimit;
 import com.wy.wydemo.exception.BusinessException;
@@ -9,7 +9,6 @@ import com.wy.wydemo.model.enums.StatusCodeEnum;
 import com.wy.wydemo.model.vo.request.CodeReq;
 import com.wy.wydemo.model.vo.request.LoginReq;
 import com.wy.wydemo.model.vo.request.UserRegistrationReq;
-import com.wy.wydemo.model.vo.vo.UserLoginResponseVO;
 import com.wy.wydemo.result.Result;
 import com.wy.wydemo.service.LoginService;
 import com.wy.wydemo.service.UserService;
@@ -19,7 +18,10 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -32,7 +34,8 @@ import javax.validation.Valid;
  * @create: 2024/11/02 15:36
  */
 @Api(tags = "注册管理")
-@RestController @Slf4j
+@RestController
+@Slf4j
 public class LoginController {
     
     
@@ -44,6 +47,7 @@ public class LoginController {
     
     /**
      * 用户注册
+     *
      * @param userRegisterRequest
      * @return
      */
@@ -51,7 +55,7 @@ public class LoginController {
     @ApiOperation(value = "用户注册 后台测试")
     public Result<Long> userRegister(@Valid @RequestBody UserRegisterRequest userRegisterRequest) {
         
-        if(userRegisterRequest == null){
+        if (userRegisterRequest == null) {
             //    PARAMS_ERROR(40000, "请求参数错误"),
             throw new BusinessException(StatusCodeEnum.PARAMS_ERROR);
         }
@@ -97,14 +101,31 @@ public class LoginController {
     /**
      * 用户退出
      */
-    @SaCheckLogin
     @ApiOperation(value = "用户退出")
     @GetMapping("/logout")
-    public Result<?> logout() {
-        StpUtil.logout();
-        return Result.success();
+    public Result<?> logout(HttpServletRequest request) {
+        try {
+            // 从请求头获取 Token
+            String authorizationHeader = request.getHeader("Authorization");
+            log.info("收到的 Authorization 请求头: {}", authorizationHeader);
+            
+            String token = StpUtil.getTokenValue();
+            log.info("当前 Token: {}", token);
+         
+            StpUtil.checkLogin();
+     
+            StpUtil.logout();
+
+        if (StringUtils.isNotBlank(token)) {
+            log.info("用户已成功退出");
+            return Result.success("用户已成功退出");
+        }
+        return Result.fail("用户退出失败");
+        } catch (NotLoginException e) {
+            log.warn("Token 无效或已过期: {}", e.getMessage());
+            return Result.fail("未登录或登录已过期");
+        }
     }
-    
     
     
     /**
@@ -123,7 +144,7 @@ public class LoginController {
     /**
      * QQ登录
      *
-     * @return  Result<String> Token
+     * @return Result<String> Token
      */
     @ApiOperation(value = "QQ登录")
     @PostMapping("/oauth/qq")
