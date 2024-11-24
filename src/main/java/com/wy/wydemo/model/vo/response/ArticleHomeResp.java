@@ -1,10 +1,12 @@
 package com.wy.wydemo.model.vo.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -63,5 +65,6 @@ public class ArticleHomeResp {
      * 发表时间
      */
     @ApiModelProperty(value = "发表时间")
-    private LocalDateTime createTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date createTime;
 }

@@ -123,7 +123,7 @@ public class LoginController {
         return Result.fail("用户退出失败");
         } catch (NotLoginException e) {
             log.warn("Token 无效或已过期: {}", e.getMessage());
-            return Result.fail("未登录或登录已过期");
+            return Result.fail("Token 过期");
         }
     }
     

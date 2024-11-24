@@ -1,8 +1,12 @@
 package com.wy.wydemo.model.vo.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+
+import java.util.Date;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,7 +18,7 @@ import java.util.List;
  * @create: 2024/11/05 10:22
  */
 @Data
-@ApiModel(description = "文章后台 Response")
+@ApiModel(description = "返回前端的 文章后台 Response")
 public class ArticleBackResp {
     
     /**
@@ -93,6 +97,7 @@ public class ArticleBackResp {
      * 发表时间
      */
     @ApiModelProperty(value = "发表时间")
-    private LocalDateTime createTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date  createTime;
     
 }
