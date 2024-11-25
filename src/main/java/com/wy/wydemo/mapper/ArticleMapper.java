@@ -114,4 +114,20 @@ public interface ArticleMapper extends BaseMapper<Article> {
      * @return 文章列表
      */
     List<ArticleConditionResp> selectArticleListByCondition(@Param("param") ArticleConditionQuery articleConditionQuery);
+    
+    
+    /**
+     * 执行分页查询，返回分页数据
+     * @param current
+     * @param size
+     * @return
+     */
+    List<ArticleHomeResp> selectArticlesWithPagination(Integer current, Integer size);
+    /**
+     * 查询文章总数
+     * @return
+     */
+    long countArticles();
+    
+    
 }

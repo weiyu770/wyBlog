@@ -28,4 +28,17 @@ public class LikeStrategyContext {
     public void executeLikeStrategy(LikeTypeEnum likeType, Integer typeId) {
         likeStrategyMap.get(likeType.getStrategy()).like(typeId);
     }
+    
+    
+    
+    /**
+     * 取消点赞
+     *
+     * @param likeType 点赞类型
+     * @param typeId   类型id
+     */
+    public void executeUnlikeStrategy(LikeTypeEnum likeType, Integer typeId) {
+        likeStrategyMap.get(likeType.getStrategy()).unlike(typeId);
+    }
+    
 }

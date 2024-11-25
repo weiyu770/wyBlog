@@ -287,6 +287,8 @@
         GROUP BY date
         ORDER BY date DESC
     </select>
+
+
     <select id="selectArticleListByCondition"
             resultType="com.wy.wydemo.model.vo.response.ArticleConditionResp">
         SELECT a.id,
@@ -313,5 +315,63 @@
         ORDER BY a.id DESC
         LIMIT #{param.current}, #{param.size}
     </select>
+
+
+    <select id="selectArticlesWithPagination" resultMap="articleHomeVO">
+        <!-- 查询逻辑：根据条件分页获取文章列表 -->
+        SELECT a.id,
+        a.article_cover,
+        a.article_title,
+        a.article_desc,
+        a.create_time,
+        a.article_type,
+        a.is_top,
+        a.category_id,
+        c.category_name,
+        t.id AS tag_id,
+        t.tag_name
+        FROM (
+        SELECT id,
+        article_cover,
+        article_title,
+        article_desc,
+        article_type,
+        is_top,
+        create_time,
+        category_id
+        FROM t_article
+        WHERE is_delete = 0 AND `status` = 1
+        ORDER BY is_top DESC, id DESC
+        LIMIT #{current}, #{size}
+        ) a
+        LEFT JOIN t_category c ON a.category_id = c.id
+        LEFT JOIN t_article_tag tat ON a.id = tat.article_id
+        LEFT JOIN t_tag t ON tat.tag_id = t.id
+    </select>
+
+
+    <select id="countArticles" resultType="java.lang.Long">
+        <!-- 查询逻辑：根据条件统计文章总数 -->
+        SELECT COUNT(DISTINCT a.id)
+        FROM t_article a
+        LEFT JOIN t_article_tag tat ON a.id = tat.article_id
+        <where>
+            is_delete = 0
+            AND `status` = 1
+            <if test="param.keyword != null and param.keyword != ''">
+                AND a.article_title LIKE concat('%', #{param.keyword}, '%')
+            </if>
+            <if test="param.categoryId != null">
+                AND a.category_id = #{param.categoryId}
+            </if>
+            <if test="param.articleType != null">
+                AND a.article_type = #{param.articleType}
+            </if>
+        </where>
+    </select>
+
+
+
+
 
 </mapper>

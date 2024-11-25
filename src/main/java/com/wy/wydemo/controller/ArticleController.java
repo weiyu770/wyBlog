@@ -4,12 +4,13 @@ import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.wy.wydemo.annotation.OptLogger;
 import com.wy.wydemo.annotation.VisitLogger;
 import com.wy.wydemo.model.enums.LikeTypeEnum;
-import com.wy.wydemo.model.vo.request.RecommendReq;
-import com.wy.wydemo.model.vo.query.PageQuery;
-import com.wy.wydemo.model.vo.response.*;
-import com.wy.wydemo.model.vo.request.DeleteReq;
 import com.wy.wydemo.model.vo.query.ArticleQuery;
-import com.wy.wydemo.model.vo.request.*;
+import com.wy.wydemo.model.vo.query.PageQuery;
+import com.wy.wydemo.model.vo.request.ArticleReq;
+import com.wy.wydemo.model.vo.request.DeleteReq;
+import com.wy.wydemo.model.vo.request.RecommendReq;
+import com.wy.wydemo.model.vo.request.TopReq;
+import com.wy.wydemo.model.vo.response.*;
 import com.wy.wydemo.result.Result;
 import com.wy.wydemo.service.ArticleService;
 import com.wy.wydemo.strategy.context.LikeStrategyContext;
@@ -52,12 +53,11 @@ public class ArticleController {
      * @return {@link Result<   ArticleBackResp   >} 后台文章列表
      */
     @ApiOperation(value = "查询后台文章列表")
-//    @SaCheckPermission("blog:article:list")
+    //    @SaCheckPermission("blog:article:list")
     @GetMapping("/admin/article/list")
-    public Result<PageResult<ArticleBackResp>> listArticleBackVO(ArticleQuery articleQuery) {
+    public Result<com.wy.wydemo.model.vo.response.PageResult<ArticleBackResp>> listArticleBackVO(ArticleQuery articleQuery) {
         return Result.success(articleService.listArticleBackVO(articleQuery));
     }
-    
     
     /**
      * 添加文章
@@ -83,7 +83,7 @@ public class ArticleController {
      */
     @OptLogger(value = DELETE)
     @ApiOperation(value = "删除文章")
-//    @SaCheckPermission("blog:article:delete")
+    //    @SaCheckPermission("blog:article:delete")
     @DeleteMapping("/admin/article/delete")
     public Result<?> deleteArticle(@RequestBody List<Integer> articleIdList) {
         articleService.deleteArticle(articleIdList);
@@ -99,13 +99,12 @@ public class ArticleController {
      */
     @OptLogger(value = UPDATE)
     @ApiOperation(value = "回收或恢复文章")
-//    @SaCheckPermission("blog:article:recycle")
+    //    @SaCheckPermission("blog:article:recycle")
     @PutMapping("/admin/article/recycle")
     public Result<?> updateArticleDelete(@Validated @RequestBody DeleteReq delete) {
         articleService.updateArticleDelete(delete);
         return Result.success();
     }
-    
     
     
     /**
@@ -116,7 +115,7 @@ public class ArticleController {
      */
     @OptLogger(value = UPDATE)
     @ApiOperation(value = "修改文章")
-//    @SaCheckPermission("blog:article:update")
+    //    @SaCheckPermission("blog:article:update")
     @PutMapping("/admin/article/update")
     //TODO 应该新建一个修改的请求体
     public Result<?> updateArticle(@Validated @RequestBody ArticleReq article) {
@@ -132,12 +131,11 @@ public class ArticleController {
      * @return {@link Result<  ArticleInfoResp  >} 后台文章
      */
     @ApiOperation(value = "编辑文章")
-//    @SaCheckPermission("blog:article:edit")
+    //    @SaCheckPermission("blog:article:edit")
     @GetMapping("/admin/article/edit/{articleId}")
     public Result<ArticleInfoResp> editArticle(@PathVariable("articleId") Integer articleId) {
         return Result.success(articleService.editArticle(articleId));
     }
-    
     
     
     /**
@@ -149,9 +147,9 @@ public class ArticleController {
     @OptLogger(value = UPLOAD)
     @ApiOperation(value = "上传图片/文件")
     @ApiImplicitParam(name = "file", value = "文件", required = true, dataTypeClass = MultipartFile.class)
-//    @SaCheckPermission("blog:article:upload")
+    //    @SaCheckPermission("blog:article:upload")
     @PostMapping("/admin/article/upload")
-    public Result<String> saveArticleImages(@RequestPart("file") MultipartFile multipartFile ){
+    public Result<String> saveArticleImages(@RequestPart("file") MultipartFile multipartFile) {
         return Result.success(articleService.saveArticleImages(multipartFile));
     }
     
@@ -164,7 +162,7 @@ public class ArticleController {
      */
     @OptLogger(value = UPDATE)
     @ApiOperation(value = "置顶文章")
-//    @SaCheckPermission("blog:article:top")
+    //    @SaCheckPermission("blog:article:top")
     @PutMapping("/admin/article/top")
     public Result<?> updateArticleTop(@Validated @RequestBody TopReq top) {
         articleService.updateArticleTop(top);
@@ -180,13 +178,12 @@ public class ArticleController {
      */
     @OptLogger(value = UPDATE)
     @ApiOperation(value = "推荐文章")
-//    @SaCheckPermission("blog:article:recommend")
+    //    @SaCheckPermission("blog:article:recommend")
     @PutMapping("/admin/article/recommend")
     public Result<?> updateArticleRecommend(@Validated @RequestBody RecommendReq recommend) {
         articleService.updateArticleRecommend(recommend);
         return Result.success();
     }
-    
     
     
     /**
@@ -197,8 +194,6 @@ public class ArticleController {
      */
     @SaCheckLogin
     @ApiOperation(value = "点赞文章")
-//    @AccessLimit(seconds = 60, maxCount = 3)
-//    @SaCheckPermission("blog:article:like")
     @PostMapping("/article/{articleId}/like")
     public Result<?> likeArticle(@PathVariable("articleId") Integer articleId) {
         likeStrategyContext.executeLikeStrategy(LikeTypeEnum.ARTICLE, articleId);
@@ -227,9 +222,25 @@ public class ArticleController {
     @VisitLogger(value = "首页")
     @ApiOperation(value = "查看首页文章列表")
     @GetMapping("/article/list")
-    public Result<PageResult<ArticleHomeResp>> listArticleHomeVO(PageQuery pageQuery) {
+    public Result<com.wy.wydemo.model.vo.response.PageResult<ArticleHomeResp>> listArticleHomeVO(PageQuery pageQuery) {
         return Result.success(articleService.listArticleHomeVO(pageQuery));
     }
+    
+    
+    /**
+     * 分页查询
+     * @param pageQuery
+     * @return
+     */
+    @ApiOperation(value = "分页查询文章列表")
+    @GetMapping("/article/paginated-list")
+    public Result<PageResult<ArticleHomeResp>> listArticlesWithPagination(PageQuery pageQuery) {
+        return Result.success(articleService.listArticlesWithPagination(pageQuery));
+    }
+
+
+    
+    
     
     /**
      * 查看文章
@@ -257,7 +268,6 @@ public class ArticleController {
     }
     
     
-    
     /**
      * 查看文章归档
      *
@@ -269,6 +279,22 @@ public class ArticleController {
     @GetMapping("/archives/list")
     public Result<PageResult<ArchiveResp>> listArchiveVO(PageQuery pageQuery) {
         return Result.success(articleService.listArchiveVO(pageQuery));
+    }
+    
+    
+    
+    /**
+     * 取消点赞文章
+     *
+     * @param articleId 文章id
+     * @return {@link Result<>}
+     */
+    @SaCheckLogin
+    @ApiOperation(value = "取消点赞文章")
+    @PostMapping("/article/{articleId}/unlike")
+    public Result<?> unlikeArticle(@PathVariable("articleId") Integer articleId) {
+        likeStrategyContext.executeUnlikeStrategy(LikeTypeEnum.ARTICLE, articleId);
+        return Result.success();
     }
     
     

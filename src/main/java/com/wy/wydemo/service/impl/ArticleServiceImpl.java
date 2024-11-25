@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.wy.wydemo.constant.CommonConstant;
 import com.wy.wydemo.constant.RedisConstant;
 import com.wy.wydemo.mapper.ArticleMapper;
@@ -32,9 +34,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.*;
 import java.util.stream.Collectors;
+
 
 /**
  * @description: 文章帖子服务实现
@@ -360,6 +362,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     
     /**
      * 查看首页文章列表
+     *
      * @param pageQuery
      * @return
      */
@@ -449,6 +452,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     
     /**
      * 查看文章归档
+     *
      * @param pageQuery
      * @return
      */
@@ -489,6 +493,24 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
                 .sorted(Comparator.comparingInt(ArticleRankResp::getViewCount).reversed())
                 .collect(Collectors.toList());
     }
+    
+    /**
+     * 分页查询文章列表
+     * @param pageQuery 分页查询参数
+     * @return 分页结果
+     */
+    @Override
+    public PageResult<ArticleHomeResp> listArticlesWithPagination(PageQuery pageQuery) {
+        // 设置分页参数
+        com.github.pagehelper.Page<Object> page = PageHelper.startPage(pageQuery.getCurrent(), pageQuery.getSize());
+        
+        // 执行查询
+        List<ArticleHomeResp> articles = articleMapper.selectArticlesWithPagination(pageQuery.getCurrent(), pageQuery.getSize());
+        
+        // 将查询结果封装到 PageResult 中
+        return new PageResult<>(articles, page.getTotal());
+    }
+
     
     
 }

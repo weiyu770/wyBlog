@@ -23,6 +23,7 @@ public interface ArticleService extends IService<Article> {
     
     /**
      * 查看后台文章列表
+     *
      * @param articleQuery
      * @return
      */
@@ -90,10 +91,11 @@ public interface ArticleService extends IService<Article> {
     
     /**
      * 查看首页文章列表
+     *
      * @param pageQuery
      * @return
      */
-    PageResult<ArticleHomeResp> listArticleHomeVO(PageQuery pageQuery);
+    com.wy.wydemo.model.vo.response.PageResult<ArticleHomeResp> listArticleHomeVO(PageQuery pageQuery);
     
     /**
      * 查看文章
@@ -110,10 +112,11 @@ public interface ArticleService extends IService<Article> {
     
     /**
      * 查看文章归档
+     *
      * @param pageQuery
      * @return
      */
-    PageResult<ArchiveResp> listArchiveVO(PageQuery pageQuery);
+    com.wy.wydemo.model.vo.response.PageResult<ArchiveResp> listArchiveVO(PageQuery pageQuery);
     
     
     /**
@@ -122,4 +125,11 @@ public interface ArticleService extends IService<Article> {
      * @return
      */
     List<ArticleRankResp> listArticleRank(Map<Object, Double> articleMap);
+    
+    /**
+     * 分页查询文章列表
+     * @param pageQuery
+     * @return
+     */
+    PageResult<ArticleHomeResp> listArticlesWithPagination(PageQuery pageQuery);
 }

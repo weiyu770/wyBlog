@@ -14,4 +14,11 @@ public interface LikeStrategy {
      * @param typeId 类型id
      */
     void like(Integer typeId);
+    
+    /**
+     * 取消点赞
+     *
+     * @param typeId 类型id
+     */
+    void unlike(Integer typeId);
 }

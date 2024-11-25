@@ -69,17 +69,17 @@ public class LoginController {
     }
     
     
-    /**
-     * 用户登录
-     *
-     * @param login 登录参数
-     * @return {@link String} Token
-     */
-    @ApiOperation(value = "用户登录")
-    @PostMapping("/login")
-    public Result<String> login(@Validated @RequestBody LoginReq login) {
-        return Result.success(loginService.login(login));
-    }
+//    /**
+//     * 用户登录
+//     *
+//     * @param login 登录参数
+//     * @return {@link String} Token
+//     */
+//    @ApiOperation(value = "用户登录")
+//    @PostMapping("/login")
+//    public Result<String> login(@Validated @RequestBody LoginReq login) {
+//        return Result.success(loginService.login(login));
+//    }
     
     
     /**

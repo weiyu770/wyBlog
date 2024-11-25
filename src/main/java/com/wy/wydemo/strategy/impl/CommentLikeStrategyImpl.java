@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wy.wydemo.constant.CommonConstant;
 import com.wy.wydemo.constant.RedisConstant;
 import com.wy.wydemo.mapper.CommentMapper;
+import com.wy.wydemo.model.entity.Article;
 import com.wy.wydemo.model.entity.Comment;
 import com.wy.wydemo.service.impl.RedisService;
 import com.wy.wydemo.strategy.LikeStrategy;
@@ -50,4 +51,11 @@ public class CommentLikeStrategyImpl implements LikeStrategy {
             redisService.incrHash(RedisConstant.COMMENT_LIKE_COUNT, commentId.toString(), 1L);
         }
     }
+    
+    @Override
+    public void unlike(Integer typeId) {
+    
+    }
+    
+    
 }

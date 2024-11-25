@@ -68,4 +68,38 @@ public class ArticleLikeStrategyImpl implements LikeStrategy {
             log.info("点赞成功，文章ID: {} 的点赞量已增加", articleId);
         }
     }
+    
+    @Override
+    public void unlike(Integer articleId) {
+        log.info("开始处理文章取消点赞请求，文章ID: {}", articleId);
+        
+        // 判断文章是否存在或者是否进入回收站
+        Article article = articleMapper.selectOne(new LambdaQueryWrapper<Article>()
+                .select(Article::getId, Article::getIsDelete)
+                .eq(Article::getId, articleId));
+        
+        // 检查文章是否存在
+        Assert.isFalse(Objects.isNull(article) || article.getIsDelete().equals(CommonConstant.TRUE), "文章不存在");
+        log.info("文章ID: {} 存在，且未被删除", articleId);
+        
+        // 用户id作为键，文章id作为值，记录用户点赞记录
+        String userLikeArticleKey = RedisConstant.USER_ARTICLE_LIKE + StpUtil.getLoginIdAsLong();
+        
+        // 判断是否已点赞
+        if (!redisService.hasSetValue(userLikeArticleKey, articleId)) {
+            log.info("用户未点赞文章ID: {}，无法取消点赞", articleId);
+            return;  // 如果用户没有点赞，则不进行任何操作
+        }
+        
+        // 取消点赞
+        log.info("用户已点赞文章ID: {}，即将取消点赞", articleId);
+        
+        // 删除用户id中的文章id
+        redisService.deleteSet(userLikeArticleKey, articleId);
+        
+        // 文章点赞量-1
+        redisService.decrHash(RedisConstant.ARTICLE_LIKE_COUNT, articleId.toString(), 1L);
+        log.info("取消点赞成功，文章ID: {} 的点赞量已减少", articleId);
+    }
+    
 }
