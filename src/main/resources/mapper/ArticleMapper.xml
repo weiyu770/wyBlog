@@ -4,6 +4,7 @@
 <mapper namespace="com.wy.wydemo.mapper.ArticleMapper">
 
 
+
     <select id="selectBackArticleCount" resultType="java.lang.Long">
         SELECT COUNT(DISTINCT a.id)
         FROM t_article a
@@ -350,28 +351,10 @@
     </select>
 
 
-    <select id="countArticles" resultType="java.lang.Long">
-        <!-- 查询逻辑：根据条件统计文章总数 -->
-        SELECT COUNT(DISTINCT a.id)
-        FROM t_article a
-        LEFT JOIN t_article_tag tat ON a.id = tat.article_id
-        <where>
-            is_delete = 0
-            AND `status` = 1
-            <if test="param.keyword != null and param.keyword != ''">
-                AND a.article_title LIKE concat('%', #{param.keyword}, '%')
-            </if>
-            <if test="param.categoryId != null">
-                AND a.category_id = #{param.categoryId}
-            </if>
-            <if test="param.articleType != null">
-                AND a.article_type = #{param.articleType}
-            </if>
-        </where>
+    <select id="countArticlesWithPagination" resultType="long">
+        SELECT COUNT(*)
+        FROM t_article
+        WHERE is_delete = 0 AND `status` = 1
     </select>
-
-
-
-
 
 </mapper>

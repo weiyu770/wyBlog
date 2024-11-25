@@ -123,11 +123,7 @@ public interface ArticleMapper extends BaseMapper<Article> {
      * @return
      */
     List<ArticleHomeResp> selectArticlesWithPagination(Integer current, Integer size);
-    /**
-     * 查询文章总数
-     * @return
-     */
-    long countArticles();
     
     
+    long countArticlesWithPagination();
 }

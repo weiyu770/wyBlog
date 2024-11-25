@@ -501,16 +501,22 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
      */
     @Override
     public PageResult<ArticleHomeResp> listArticlesWithPagination(PageQuery pageQuery) {
-        // 设置分页参数
-        com.github.pagehelper.Page<Object> page = PageHelper.startPage(pageQuery.getCurrent(), pageQuery.getSize());
         
-        // 执行查询
+        log.info("开始分页查询，当前页：{}，每页大小：{}", pageQuery.getCurrent(), pageQuery.getSize());
+        // 获取总记录数
+        long total = articleMapper.countArticlesWithPagination();
+        
+        // 设置分页参数
+        PageHelper.startPage(pageQuery.getCurrent(), pageQuery.getSize());
+        
+        // 执行分页查询
         List<ArticleHomeResp> articles = articleMapper.selectArticlesWithPagination(pageQuery.getCurrent(), pageQuery.getSize());
         
+        log.info("查询到文章总数：{}，当前页文章数：{}", total, articles.size());
+        
         // 将查询结果封装到 PageResult 中
-        return new PageResult<>(articles, page.getTotal());
+        return new PageResult<>(articles, total);
     }
-
     
     
 }
